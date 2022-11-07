@@ -1,16 +1,14 @@
-package com.kgit2.test.flags
-
-import flags.BinFlagCommon
+package flags
 
 // import com.kgit2.annotation.BitMask
 
 // @BitMask
-sealed class BinFlag(val value: Long) {
-    object A : BinFlag(0b1)
-    object B : BinFlag(0b10)
-    object C : BinFlag(0b100)
-    object D : BinFlag(0b1000)
-    class Mask(value: Long) : BinFlag(value)
+sealed class BinFlagCommon(val value: Long) {
+    object A : BinFlagCommon(0b1)
+    object B : BinFlagCommon(0b10)
+    object C : BinFlagCommon(0b100)
+    object D : BinFlagCommon(0b1000)
+    class Mask(value: Long) : BinFlagCommon(value)
 }
 
 operator fun <T: BinFlagCommon> T.contains(other: BinFlagCommon): Boolean {
