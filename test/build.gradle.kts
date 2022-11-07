@@ -26,4 +26,5 @@ kotlin {
 dependencies {
     add("kspJvm", project(":processor"))
     // add("kspNative", project(":processor"))
+    // ksp(project(":processor"))
 }
