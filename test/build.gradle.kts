@@ -23,17 +23,10 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-    nativeTarget.apply {
-        binaries {
-            executable {
-                entryPoint = "main"
-            }
-        }
-    }
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":library"))
+                implementation(project(":bitmask-library"))
             }
             kotlin.srcDirs("build/generated/ksp/metadata/commonMain")
         }
@@ -47,9 +40,8 @@ kotlin {
 }
 
 dependencies {
-    // add("kspCommonMainMetadata", project(":processor"))
-    // add("kspCommon", project(":processor"))
-    // add("kspJvm", project(":processor"))
-    // add("kspNative", project(":processor"))
-    ksp(project(":processor"))
+    add("kspCommonMainMetadata", project(":bitmask-processor"))
+    add("kspJvm", project(":bitmask-processor"))
+    add("kspNative", project(":bitmask-processor"))
+    // ksp(project(":bitmask-processor"))
 }

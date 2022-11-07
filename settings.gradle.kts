@@ -15,8 +15,13 @@ pluginManagement {
 rootProject.name = "bitmask"
 
 include(
-    ":processor",
-    ":library",
-    ":plugin",
-    ":test"
+    ":bitmask-processor",
+    ":bitmask-library",
+    ":bitmask-plugin",
+    ":bitmask-test"
 )
+
+project(":bitmask-processor").projectDir = File("processor")
+project(":bitmask-library").projectDir = File("library")
+project(":bitmask-plugin").projectDir = File("plugin")
+project(":bitmask-test").projectDir = File("test")

@@ -11,7 +11,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":library"))
+                implementation(project(":bitmask-library"))
             }
         }
         val jvmMain by getting {
