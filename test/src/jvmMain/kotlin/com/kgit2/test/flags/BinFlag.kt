@@ -1,10 +1,9 @@
 package com.kgit2.test.flags
 
+import com.kgit2.annotation.Bitmask
 import flags.BinFlagCommon
 
-// import com.kgit2.annotation.BitMask
-
-// @BitMask
+@Bitmask
 sealed class BinFlag(val value: Long) {
     object A : BinFlag(0b1)
     object B : BinFlag(0b10)

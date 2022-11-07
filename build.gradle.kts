@@ -4,6 +4,8 @@ plugins {
 
 val kotlinVersion: String by project
 val kspVersion: String by project
+val koinVersion: String by project
+val koinKspVersion: String by project
 
 allprojects {
     group = "com.kgit2"
@@ -16,5 +18,7 @@ allprojects {
     ext {
         set("kotlinVersion", kotlinVersion)
         set("kspVersion", kspVersion)
+        set("koinVersion", koinVersion)
+        set("koinKspVersion", koinKspVersion)
     }
 }
