@@ -12,6 +12,7 @@ class BitMaskProcessor(private val environment: SymbolProcessorEnvironment) : Sy
     val logger = environment.logger
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        environment.logger.warn(resolver.getAllFiles().toString())
         val annotationChecker = KSValidateVisitor { annotation, data ->
             logger.info(annotation.toString())
             logger.info(data.toString())

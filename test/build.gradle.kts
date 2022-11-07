@@ -13,18 +13,43 @@ kotlin {
             mainClass.set("com.bppleman.MainKt")
         }
     }
+
+    val hostOs = System.getProperty("os.name")
+    val isMingwX64 = hostOs.startsWith("Windows")
+    val nativeTarget = when {
+        hostOs == "Mac OS X" -> macosArm64("native")
+        hostOs == "Linux" -> linuxX64("native")
+        isMingwX64 -> mingwX64("native")
+        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
+    }
+
+    nativeTarget.apply {
+        binaries {
+            executable {
+                entryPoint = "main"
+            }
+        }
+    }
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(project(":library"))
             }
+            kotlin.srcDirs("build/generated/ksp/metadata/commonMain")
         }
-        val jvmMain by getting
+        val jvmMain by getting {
+            kotlin.srcDirs("build/generated/ksp/jvm/jvmMain")
+        }
+        val nativeMain by getting {
+            kotlin.srcDirs("build/generated/ksp/native/nativeMain")
+        }
     }
 }
 
 dependencies {
-    add("kspJvm", project(":processor"))
+    // add("kspCommonMainMetadata", project(":processor"))
+    // add("kspCommon", project(":processor"))
+    // add("kspJvm", project(":processor"))
     // add("kspNative", project(":processor"))
-    // ksp(project(":processor"))
+    ksp(project(":processor"))
 }
