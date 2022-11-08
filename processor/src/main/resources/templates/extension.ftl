@@ -2,14 +2,14 @@
 package ${packageName}
 </#if>
 
-sealed class ${classDeclare}${mask}(value: Long) : ${classDeclare}(value) {
-    class Mask(value: Long) : ${classDeclare}(value)
+sealed class ${className}${mask}<#if constructorFields?has_content>(${constructorFields?join(", ")})</#if> : ${className}(value) {
+    class Mask(value: Long) : ${className}(value)
 }
 
-operator fun <T: ${classDeclare}> T.contains(other: ${classDeclare}): Boolean {
+operator fun <T: ${className}> T.contains(other: ${className}): Boolean {
     return (${value} and other.${value}) != 0${literalSuffix}
 }
 
-infix fun <T: ${classDeclare}> T.or(other: ${classDeclare}): ${classDeclare} {
-    return ${classDeclare}${mask}.${mask}(value or other.value)
+infix fun <T: ${className}> T.or(other: ${className}): ${className} {
+    return ${className}${mask}.${mask}(value or other.value)
 }
