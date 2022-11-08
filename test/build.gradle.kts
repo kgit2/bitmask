@@ -31,10 +31,10 @@ kotlin {
             kotlin.srcDirs("build/generated/ksp/metadata/commonMain")
         }
         val jvmMain by getting {
-            kotlin.srcDirs("build/generated/ksp/jvm/jvmMain")
+            kotlin.srcDirs("build/generated/ksp/jvm/jvmMain/kotlin")
         }
         val nativeMain by getting {
-            kotlin.srcDirs("build/generated/ksp/native/nativeMain")
+            kotlin.srcDirs("build/generated/ksp/native/nativeMain/kotlin")
         }
     }
 }

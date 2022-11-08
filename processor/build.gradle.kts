@@ -4,34 +4,22 @@ val koinVersion: String by ext
 val koinKspVersion: String by ext
 
 plugins {
-    kotlin("multiplatform")
+    kotlin("jvm")
     id("com.google.devtools.ksp")
 }
 
-kotlin {
-    jvm()
-
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(project(":bitmask-library"))
-                implementation("io.insert-koin:koin-core:$koinVersion")
-                implementation("io.insert-koin:koin-annotations:$koinKspVersion")
-            }
-        }
-        val jvmMain by getting {
-            dependencies {
-                implementation("com.google.devtools.ksp:symbol-processing-api:$kspVersion")
-            }
-            kotlin.srcDirs(
-                "src/main/kotlin",
-                "build/generated/ksp/jvm/jvmMain"
-            )
-            resources.srcDir("src/main/resources")
-        }
-    }
+dependencies {
+    implementation(project(":bitmask-library"))
+    implementation("org.freemarker:freemarker:2.3.31")
+    implementation("io.insert-koin:koin-core:$koinVersion")
+    implementation("io.insert-koin:koin-annotations:$koinKspVersion")
+    implementation("com.google.devtools.ksp:symbol-processing-api:$kspVersion")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    ksp("io.insert-koin:koin-ksp-compiler:$koinKspVersion")
 }
 
-dependencies {
-    add("kspJvm", "io.insert-koin:koin-ksp-compiler:$koinKspVersion")
+sourceSets {
+    val main by getting {
+        kotlin.srcDirs("build/generated/ksp/main")
+    }
 }

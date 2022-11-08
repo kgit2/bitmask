@@ -4,12 +4,11 @@ import com.kgit2.annotation.Bitmask
 import flags.BinFlagCommon
 
 @Bitmask
-sealed class BinFlag(val value: Long) {
-    object A : BinFlag(0b1)
-    object B : BinFlag(0b10)
-    object C : BinFlag(0b100)
-    object D : BinFlag(0b1000)
-    class Mask(value: Long) : BinFlag(value)
+sealed class SealedClassFlag(val value: Long) {
+    object A : SealedClassFlag(0b1)
+    object B : SealedClassFlag(0b10)
+    object C : SealedClassFlag(0b100)
+    object D : SealedClassFlag(0b1000)
 }
 
 operator fun <T: BinFlagCommon> T.contains(other: BinFlagCommon): Boolean {
@@ -19,3 +18,12 @@ operator fun <T: BinFlagCommon> T.contains(other: BinFlagCommon): Boolean {
 infix fun <T: BinFlagCommon> T.or(other: BinFlagCommon): BinFlagCommon {
     return BinFlagCommon.Mask(value or other.value)
 }
+
+// @Bitmask
+// enum class EnumClassFlag(val value: Long) {
+//     A(0b1),
+//     B(0b10),
+//     C(0b100),
+//     D(0b1000),
+//     Mask(0b1111)
+// }

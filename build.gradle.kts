@@ -21,4 +21,12 @@ allprojects {
         set("koinVersion", koinVersion)
         set("koinKspVersion", koinKspVersion)
     }
+
+    tasks.whenTaskAdded {
+        if (name.startsWith("ksp")) {
+            logging.captureStandardError(LogLevel.ERROR)
+            logging.captureStandardOutput(LogLevel.DEBUG)
+            group = "ksp"
+        }
+    }
 }
