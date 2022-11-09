@@ -6,7 +6,7 @@ import com.kgit2.test.types.MyLong
 interface Test
 
 @Bitmask
-sealed class SealedClass(val value: MyLong, val value2: Test? = null, val value3: Long? = null) {
+open class SealedClass constructor(val value: MyLong, val value2: Test? = null, val value3: Long? = null) {
     object A : SealedClass(0b1)
     object B : SealedClass(0b10)
     object C : SealedClass(0b100)
