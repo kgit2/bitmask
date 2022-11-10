@@ -44,27 +44,45 @@ class BitmaskAnnotatedVisitor(
         val propertyDeclarations = node.getAllProperties()
             .mapNotNull { it.accept(propertyVisitor, null) }
 
-        val value: PropertyDeclaration? = runCatching {
+        if (!checkConstructorFieldVisibility(propertyDeclarations, fieldsMap)) {
+            return null
+        }
+
+        val value: PropertyDeclaration? = kotlin.runCatching {
+            propertyDeclarations.first { it.valueAnnotation && AllowTypes.contains(it.type) }
+        }.recoverCatching {
             propertyDeclarations.first { it.name == "value" && AllowTypes.contains(it.type) }
         }.recoverCatching {
             propertyDeclarations.first { AllowTypes.contains(it.type) }
         }.getOrNull()
 
         if (value == null) {
-            logger.error("@Bitmask annotated class must have a property named 'value' or a property with type of Int, UInt, Long, ULong, Short, UShort, Byte, or UByte.", node)
+            logger.error("""
+                |No suitable property found for mask.
+                |@Bitmask will look for suitable property according to the following priorities
+                |1. annotate a property with @Value
+                |2. named `value`
+                |3. any property with type of Int, UInt, Long, ULong, Short, UShort, Byte or UByte.
+                |note: Any attribute must be with type of Int, UInt, Long, ULong, Short, UShort, Byte or UByte.
+            """.trimMargin(), node)
             return null
         }
-        if (fieldsMap?.contains(value.name) != true || value.node.getVisibility() != Visibility.PUBLIC) {
-            logger.error(
-                """
-                |Property named '${value.name}' of type: ${value.type} could not be mutable
-                |1. change it to `public`
-                |2. or put it into primary constructor.
-                |3. or use @Value annotation to specify the property.
-                |""".trimMargin()
-                , value.node
-            )
-            return null
+        logger.info("Found value property: $value", node)
+        if (fieldsMap?.contains(value.name) != true) {
+            when {
+                value.visibility != Visibility.PUBLIC.toString() -> {
+                    logger.error("Property named `${value.name}` of type: `${value.type}` could not visit.\nChange it to `${Visibility.PUBLIC}`", value.node)
+                    return null
+                }
+                !value.mutable -> {
+                    logger.error("Property named `${value.name}` of type: `${value.type}` could not be mutable.\nChange it to `Var`", value.node)
+                    return null
+                }
+                else -> {
+                    logger.error("Property named `${value.name}` of type: `${value.type}` could not be mutable.\nPut it into primary constructor.", value.node)
+                    return null
+                }
+            }
         }
 
         return BitmaskModel(
@@ -113,6 +131,21 @@ class BitmaskAnnotatedVisitor(
 
             else -> true
         }
+    }
+
+    private fun checkConstructorFieldVisibility(
+        propertyDeclarations: Sequence<PropertyDeclaration>,
+        fieldsMap: Map<String, ConstructorField>?
+    ): Boolean {
+        propertyDeclarations.associateBy(PropertyDeclaration::name).apply {
+            for ((name, field) in fieldsMap ?: emptyMap()) {
+                if (name in this && this[name]?.visibility != Visibility.PUBLIC.toString()) {
+                    logger.error("Property `${this[name]}` cannot be accessed.", this[name]!!.node)
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     companion object {
